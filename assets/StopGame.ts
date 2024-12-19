@@ -1,5 +1,5 @@
-import { _decorator, Component, Node, BoxCollider, ICollisionEvent, ConeCollider } from 'cc';
-import { NewComponent } from './PlayerMovement';
+import { _decorator, Component, Node, BoxCollider, ICollisionEvent, ConeCollider, Collider } from 'cc';
+import { PlayerMovement } from './PlayerMovement';
 const { ccclass, property } = _decorator;
 
 @ccclass('SyopGame')
@@ -9,22 +9,30 @@ export class SyopGame extends Component {
     player: Node;
 
     start() {
-        let colid = this.node.getComponent(ConeCollider)
+        let colid = this.node.getComponent(Collider)
         colid.on("onCollisionEnter", this.onColisionEnter, this)
+        colid.on("onTriggerEnter", this.onTrigger, this)
     }
 
-    onColisionEnter(event: ICollisionEvent) {
-        console.log(this.player)
-
-        if (event.otherCollider == this.player.getComponent(BoxCollider)) {
-            let move = this.player.getComponent(NewComponent)
+    onTrigger(event: ICollisionEvent) {
+        if (event.otherCollider.node == this.player) {
+            let move = this.player.getComponent(PlayerMovement)
             move.stop = true
         }
     }
 
+    onColisionEnter(event: ICollisionEvent) {
+        if (event.otherCollider.node == this.player) {
+            let move = this.player.getComponent(PlayerMovement)
+            move.stop = true
+            move.enabled = false
+        }
+    }
+
     protected onDestroy(): void {
-        let colid = this.node.getComponent(ConeCollider)
+        let colid = this.node.getComponent(Collider)
         colid.off('onCollisionEnter', this.onColisionEnter, this)
+        colid.off("onTriggerEnter", this.onTrigger, this)
     }
 
     update(deltaTime: number) {

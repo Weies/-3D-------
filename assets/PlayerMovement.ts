@@ -2,7 +2,7 @@ import { _decorator, Component, Node, RigidBody, Camera, Vec3, input, EventKeybo
 const { ccclass, property } = _decorator;
 
 @ccclass('NewComponent')
-export class NewComponent extends Component {
+export class PlayerMovement extends Component {
 
     @property(Number)
     speed: number = 0
@@ -14,10 +14,9 @@ export class NewComponent extends Component {
     camera: Camera
 
     start() {
-
-        // this.rigidBody.applyForce(new Vec3(0,0,-500))
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
         input.on(Input.EventType.KEY_UP, this.onKeyUp, this)
+        this.lpos = this.rigidBody.node.position.clone()
     }
 
     protected onDestroy(): void {
@@ -28,6 +27,8 @@ export class NewComponent extends Component {
     fw = 0.0
     lf = 0.0
     stop = false
+    vel = new Vec3
+    lpos = new Vec3
 
     onKeyUp(event: EventKeyboard) {
         if (event.keyCode == KeyCode.KEY_W || event.keyCode == KeyCode.KEY_S) {
@@ -54,19 +55,34 @@ export class NewComponent extends Component {
 
 
     update(deltaTime: number) {
-        if (this.stop)
-            return
-
-        if (this.lf != 0) {
-            let leftF = new Vec3(-1000 * deltaTime * this.lf, 0, 0)
-            this.rigidBody.applyForce(leftF)
+        let timeVec = new Vec3(deltaTime, deltaTime, deltaTime)
+        let pos = this.rigidBody.node.position.clone()
+        this.vel = pos.subtract(this.lpos).divide(timeVec).clone()
+        if (this.node.position.y < -10) {
+            // fail
+            this.enabled = false
         }
+        if (this.stop) {
+            if (this.vel.length() > 1.0) {
+                this.rigidBody.applyForce(this.vel.multiply(new Vec3(-1, -1, -1)))
 
-        if (this.fw != 0) {
-            let force = new Vec3(0, 0, -this.speed * this.fw * deltaTime)
-            this.rigidBody.applyForce(force)
+                let anglev = new Vec3
+                this.rigidBody.getAngularVelocity(anglev)
+                this.rigidBody.setAngularVelocity(anglev.multiply(new Vec3(-1, -1, -1)))
+            }
         }
+        else {
+            if (this.lf != 0) {
+                let leftF = new Vec3(-this.speed * deltaTime * this.lf, 0, 0)
+                this.rigidBody.applyForce(leftF)
+            }
 
+            if (this.fw != 0) {
+                let force = new Vec3(0, 0, -this.speed * this.fw * deltaTime)
+                this.rigidBody.applyForce(force)
+            }
+        }
+        this.lpos = this.rigidBody.node.position.clone()
     }
 
 }
