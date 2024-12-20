@@ -1,5 +1,6 @@
 import { _decorator, Component, Node, BoxCollider, ICollisionEvent, ConeCollider, Collider } from 'cc';
 import { PlayerMovement } from './PlayerMovement';
+import { win } from './win';
 const { ccclass, property } = _decorator;
 
 @ccclass('SyopGame')
@@ -8,7 +9,10 @@ export class SyopGame extends Component {
     @property(Node)
     player: Node;
 
+    win: win
+
     start() {
+        this.win = this.player.getComponent(win)
         let colid = this.node.getComponent(Collider)
         colid.on("onCollisionEnter", this.onColisionEnter, this)
         colid.on("onTriggerEnter", this.onTrigger, this)
@@ -17,6 +21,7 @@ export class SyopGame extends Component {
     onTrigger(event: ICollisionEvent) {
         if (event.otherCollider.node == this.player) {
             let move = this.player.getComponent(PlayerMovement)
+            this.win.onWin()
             move.stop = true
         }
     }
@@ -25,6 +30,7 @@ export class SyopGame extends Component {
         if (event.otherCollider.node == this.player) {
             let move = this.player.getComponent(PlayerMovement)
             move.stop = true
+            this.win.onFailed()
             move.enabled = false
         }
     }

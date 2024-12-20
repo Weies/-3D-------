@@ -11,9 +11,6 @@ export class ShowVel extends Component {
     @property(Label)
     label: Label
 
-    @property(Canvas)
-    canvas: Canvas
-
     mov: PlayerMovement
     start() {
         this.mov = this.player.getComponent(PlayerMovement)
