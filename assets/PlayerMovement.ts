@@ -1,26 +1,19 @@
-import { _decorator, Component, Node, RigidBody, Camera, Vec3, input, EventKeyboard, Input, KeyCode } from 'cc';
+import { _decorator, Component, RigidBody, Vec3, input, EventKeyboard, Input, KeyCode, director } from 'cc';
 const { ccclass, property } = _decorator;
-import { win } from './win';
 
-@ccclass('NewComponent')
+@ccclass('PlayerMovement')
 export class PlayerMovement extends Component {
-
     @property(Number)
-    speed: number = 0
+    speed: number = 1000
 
-    @property(RigidBody)
     rigidBody: RigidBody
 
-    @property(Camera)
-    camera: Camera
-
-    win: win
-
     start() {
+        this.rigidBody = this.node.getComponent(RigidBody);
+
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
         input.on(Input.EventType.KEY_UP, this.onKeyUp, this)
         this.lpos = this.rigidBody.node.position.clone()
-        this.win = this.node.getComponent(win)
     }
 
     protected onDestroy(): void {
@@ -79,13 +72,12 @@ export class PlayerMovement extends Component {
         this.rigidBody.setAngularVelocity(anglev.multiply(new Vec3(-v, -v, -v)))
     }
 
-
     update(deltaTime: number) {
         let timeVec = new Vec3(deltaTime, deltaTime, deltaTime)
         let pos = this.rigidBody.node.position.clone()
         this.vel = pos.subtract(this.lpos).divide(timeVec).clone()
         if (this.node.position.y < -1) {
-            this.win.onFailed()
+            director.getScene().emit("player_failed");
             this.enabled = false
         }
         if (this.stop) {

@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "f63c2104-75b3-4e06-9d4d-fc6b39b24d43",
+  "uuid": "b454b91c-76c5-459b-a82e-06c529384f10",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "Block02"
+    "syncNodeName": "FailObj"
   }
 }

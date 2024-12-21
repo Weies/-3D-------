@@ -17,7 +17,6 @@ export class ShowVel extends Component {
     }
 
     update(deltaTime: number) {
-        // this.canvas = this.player.position
         this.label.string = this.mov.vel.length().toFixed(2).toString()
     }
 }
