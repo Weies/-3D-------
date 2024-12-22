@@ -1,6 +1,5 @@
 import { _decorator, Component, director, Collider, ICollisionEvent } from 'cc';
 const { ccclass, property } = _decorator;
-import { PlayerMovement } from './PlayerMovement';
 
 @ccclass('sFailObj')
 export class sFailObj extends Component {
@@ -15,7 +14,7 @@ export class sFailObj extends Component {
     }
 
     onColisionEnter(event: ICollisionEvent) {
-        if (event.otherCollider.node.getComponent(PlayerMovement)) {
+        if (event.otherCollider.node.name.startsWith("Player")) {
             director.getScene().emit("player_failed")
         }
     }

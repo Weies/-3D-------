@@ -1,6 +1,5 @@
-import { _decorator, Component, Node, Label, Canvas } from 'cc';
+import { _decorator, Component, Node, Label, Canvas, Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
-import { PlayerMovement } from './PlayerMovement';
 
 @ccclass('ShowVel')
 export class ShowVel extends Component {
@@ -11,13 +10,16 @@ export class ShowVel extends Component {
     @property(Label)
     label: Label
 
-    mov: PlayerMovement
+    lp = new Vec3
     start() {
-        this.mov = this.player.getComponent(PlayerMovement)
+        this.lp.set(this.player.position)
     }
 
     update(deltaTime: number) {
-        this.label.string = this.mov.vel.length().toFixed(2).toString()
+        let vel = this.player.position.clone().subtract(this.lp).divide3f(deltaTime, deltaTime, deltaTime)
+        this.label.string = vel.length().toFixed(2).toString()
+        
+        this.lp.set(this.player.position)
     }
 }
 

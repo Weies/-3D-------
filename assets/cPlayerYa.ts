@@ -1,12 +1,12 @@
 import { _decorator, Component, Node, Collider, director } from 'cc';
 const { ccclass, property } = _decorator;
-import { PlayerMovement } from './PlayerMovKeyboard';
+import { PlayerMovScreen } from './PlayerMovScreen';
 
 @ccclass('cPlayer')
 export class cPlayer extends Component {
-    mov: PlayerMovement
+    mov: PlayerMovScreen
     start() {
-        this.mov = this.node.getComponent(PlayerMovement);
+        this.mov = this.node.getComponent(PlayerMovScreen);
 
         director.getScene().on("game_start", this.beginMove, this);
         director.getScene().on("player_win", this.onWin, this);

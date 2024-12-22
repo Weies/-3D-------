@@ -1,6 +1,5 @@
 import { _decorator, Component, Node, Collider, ICollisionEvent, ITriggerEvent, director } from 'cc';
 const { ccclass, property } = _decorator;
-import { PlayerMovement } from './PlayerMovement';
 
 @ccclass('cWinObj')
 export class cWinObj extends Component {
@@ -15,7 +14,7 @@ export class cWinObj extends Component {
     }
 
     onTriggerEnter(event: ITriggerEvent) {
-        if (event.otherCollider.node.getComponent(PlayerMovement)) {
+        if (event.otherCollider.node.name.startsWith("Player")) {
             director.getScene().emit("player_win")
         }
     }
